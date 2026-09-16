@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Orayo — pour Morayo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Work+Sans:wght@400;500;600&display=swap');
+
+  :root{
+    --ink: #14171F;
+    --cream: #F4EDE0;
+    --blue: #2B4F7C;
+    --blue-light: #7FAAD6;
+    --bordeaux: #7A2E3A;
+    --gold: #C9973F;
+    --rose: #B5657A;
+    --teal: #4A7C94;
+    --line-on-ink: rgba(244,237,224,0.15);
+    --line-on-cream: rgba(20,23,31,0.12);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background: var(--ink);
+    color: var(--cream);
+    font-family: 'Work Sans', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .stage{
+    max-width: 560px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 32px 22px 60px;
+    position: relative;
+  }
+
+  .screen{ display:none; animation: rise 0.5s ease; }
+  .screen.active{ display:flex; flex-direction: column; min-height: calc(100vh - 92px); }
+
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(10px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce){ .screen{ animation: none; } }
+
+  h1,h2,h3{
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 15px 26px;
+    border-radius: 999px;
+    background: var(--blue);
+    color: var(--cream);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    width: 100%;
+  }
+  .btn:hover{ transform: translateY(-1px); box-shadow: 0 8px 20px rgba(43,79,124,0.35); }
+  .btn:active{ transform: translateY(0); }
+
+  .btn-ghost{
+    background: transparent;
+    color: var(--cream);
+    border: 1.5px solid var(--line-on-ink);
+    opacity: 0.9;
+  }
+  .btn-ghost:hover{ box-shadow: none; border-color: var(--cream); opacity: 1; }
+
+  .btn-row{ margin-top: 30px; display:flex; flex-direction:column; gap: 12px; }
+  .btn-row.two{ flex-direction: row; }
+
+  .top-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 26px; }
+  .back{
+    color: var(--cream); opacity: 0.55; font-size: 14px; cursor: pointer;
+    background:none; border:none; font-family:'Work Sans', sans-serif; padding: 6px 0;
+  }
+  .back:hover{ opacity: 1; }
+
+  /* ---- Intro flow (shared) ---- */
+  .intro-body{ flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .eyebrow-note{ text-align:center; opacity: 0.6; font-size: 14px; margin-bottom: 10px; }
+
+  /* ---- Photo scatter (polaroid collage) ---- */
+  .photo-scatter{
+    display:flex; flex-wrap:wrap; justify-content:center; align-content:center;
+    margin: 4px 0 28px; padding: 10px 6px 0;
+  }
+  .photo-scatter .polaroid{
+    background:#fdfaf3; padding: 5px 5px 13px; border-radius: 3px;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.4);
+    width: 92px; margin: 6px -12px; flex-shrink:0;
+  }
+  .photo-scatter .polaroid img{
+    display:block; width:100%; height:108px; object-fit:cover; border-radius:1px; background: var(--ink);
+  }
+  .photo-scatter .polaroid:nth-child(1){ transform: rotate(-9deg) translateY(4px); z-index:1; }
+  .photo-scatter .polaroid:nth-child(2){ transform: rotate(6deg) translateY(-6px); z-index:2; }
+  .photo-scatter .polaroid:nth-child(3){ transform: rotate(-4deg) translateY(8px); z-index:3; }
+  .photo-scatter .polaroid:nth-child(4){ transform: rotate(9deg) translateY(-2px); z-index:2; }
+  .photo-scatter .polaroid:nth-child(5){ transform: rotate(-11deg) translateY(2px); z-index:1; }
+  .photo-scatter .polaroid:nth-child(6){ transform: rotate(5deg) translateY(6px); z-index:3; }
+  .photo-scatter .polaroid:nth-child(7){ transform: rotate(-6deg) translateY(-4px); z-index:2; }
+  .photo-scatter .polaroid:nth-child(8){ transform: rotate(10deg) translateY(3px); z-index:1; }
+  .photo-scatter .polaroid:nth-child(9){ transform: rotate(-3deg) translateY(-3px); z-index:2; }
+
+  .hero-title{
+    font-size: 46px;
+    line-height: 1.1;
+    text-align:center;
+  }
+  #screen-title .hero-title span{ color: var(--blue); display:block; }
+  .hero-sub{
+    text-align:center;
+    opacity: 0.72;
+    font-size: 16px;
+    line-height: 1.55;
+    margin: 20px auto 0;
+    max-width: 42ch;
+  }
+
+  .letter{
+    font-family: 'Work Sans', sans-serif;
+    font-size: 18px;
+    line-height: 1.65;
+    text-align: left;
+  }
+  .letter p{ margin: 0 0 18px; }
+
+  .meme-sticker{
+    display:block; max-width: 210px; width: 60%; margin: 22px auto 0;
+    border-radius: 10px; transform: rotate(-4deg);
+    box-shadow: 0 12px 26px rgba(0,0,0,0.45);
+    border: 4px solid #fff;
+  }
+
+  .reassure-box{
+    background: var(--cream);
+    border-radius: 18px;
+    padding: 28px 24px;
+    text-align:center;
+    border: 1.5px solid var(--gold);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.28);
+  }
+  .reassure-box p{
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 600;
+    font-size: 21px;
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .reassure-video{
+    display:block; width: 70%; max-width: 240px; margin: 26px auto 0;
+    border-radius: 16px; box-shadow: 0 14px 30px rgba(0,0,0,0.45);
+  }
+
+  /* ---- Photo / bulb screen ---- */
+  .bulb-wrap{
+    display:flex; flex-direction:column; align-items:center;
+    margin-top: 12px;
+  }
+  .bulb-btn{
+    background:none; border:none; cursor:pointer;
+    padding: 10px;
+  }
+  .bulb-btn svg{ width: 64px; height: 64px; transition: filter 0.4s ease; }
+  .bulb-btn .filament{ transition: fill 0.4s ease, opacity 0.4s ease; opacity: 0.35; }
+  .bulb-btn .glow{ opacity: 0; transition: opacity 0.5s ease; }
+  .bulb-btn.lit .filament{ fill: var(--gold); opacity: 1; }
+  .bulb-btn.lit .glow{ opacity: 0.55; }
+  .bulb-btn.lit svg{ filter: drop-shadow(0 0 16px rgba(201,151,63,0.75)); }
+  .bulb-hint{ opacity: 0.6; font-size: 13px; margin-top: 10px; text-align:center; }
+
+  .reveal-next{ opacity:0; max-height:0; overflow:hidden; transition: opacity 0.4s ease; }
+  .reveal-next.show{ opacity:1; max-height:200px; margin-top: 26px; }
+
+  /* ---- Name reveal ---- */
+  .name-reveal{
+    text-align:center;
+    font-size: 52px;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    color: var(--blue);
+    margin: 6px 0 26px;
+    opacity: 0;
+    transform: scale(0.92);
+    animation: nameIn 1.6s ease forwards 0.2s;
+  }
+  @keyframes nameIn{ to{ opacity:1; transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce){ .name-reveal{ opacity:1; transform:none; animation:none; } }
+
+  #screen-reveal .letter{
+    opacity: 0;
+    animation: fadeUpText 0.7s ease forwards;
+    animation-delay: 2s;
+  }
+  @keyframes fadeUpText{ from{ opacity:0; transform: translateY(10px); } to{ opacity:1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce){ #screen-reveal .letter{ opacity:1; transform:none; animation:none; } }
+
+  /* ---- Menu / header ---- */
+  .menu-title{ font-size: 28px; margin-bottom: 4px; color: var(--blue-light); }
+  .menu-sub{ opacity: 0.6; font-size: 15px; margin-bottom: 28px; line-height: 1.45; }
+
+  .cat-grid{ display:flex; flex-direction:column; gap: 12px; }
+  .cat-card{
+    background: var(--cream); border: 1px solid var(--line-on-cream); border-radius: 18px;
+    padding: 18px 20px; display:flex; align-items:center; gap: 16px;
+    cursor:pointer; text-align:left; width:100%; color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .cat-card:hover{ border-color: var(--cat-color, var(--ink)); transform: translateX(2px); box-shadow: 0 6px 18px rgba(0,0,0,0.18); }
+  .cat-dot{
+    width: 44px; height:44px; border-radius: 50%; flex-shrink:0;
+    background: var(--cat-color, var(--ink));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 18px; color: var(--cream);
+  }
+  .cat-name{ font-family:'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 17px; margin-bottom: 2px; }
+  .cat-desc{ opacity: 0.6; font-size: 13.5px; line-height:1.4; }
+
+  .random-block{ margin-top: 26px; border-top: 1px dashed var(--line-on-ink); padding-top: 22px; text-align:center; }
+  .random-block p{ opacity: 0.65; font-size: 14px; margin: 0 0 14px; }
+
+  .link-row{ margin-top: 22px; display:flex; flex-direction: column; gap: 10px; }
+  .rhythm-link{
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align:center;
+    cursor:pointer;
+    border-radius: 16px;
+    padding: 18px 20px;
+    border: 1px solid var(--line-on-cream);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+  }
+  .rhythm-link:hover{ box-shadow: 0 8px 20px rgba(0,0,0,0.2); transform: translateY(-1px); }
+
+  /* ---- Category / exercise list ---- */
+  .ex-list{ display:flex; flex-direction:column; gap: 10px; }
+  .ex-row{
+    background: var(--cream); border: 1px solid var(--line-on-cream); border-radius: 14px;
+    padding: 15px 18px; display:flex; justify-content:space-between; align-items:center;
+    cursor:pointer; width:100%; text-align:left; color: var(--ink); font-family:'Work Sans', sans-serif;
+  }
+  .ex-row:hover{ border-color: var(--cat-color, var(--ink)); }
+  .ex-row-title{ font-size: 15.5px; font-weight: 500; }
+  .ex-row-time{ font-size: 13px; opacity: 0.55; white-space:nowrap; margin-left: 12px; }
+
+  .ex-card{ background: var(--cream); border-radius: 22px; padding: 28px 24px; border: 1px solid var(--line-on-cream); }
+  .ex-tag{
+    display:inline-block; font-size: 12.5px; font-weight: 600; color: var(--cat-color, var(--ink));
+    border: 1.5px solid var(--cat-color, var(--ink)); border-radius: 999px; padding: 4px 12px; margin-bottom: 16px;
+  }
+  .ex-title{ font-size: 24px; margin-bottom: 8px; line-height:1.3; color: var(--ink); }
+  .ex-time{ opacity: 0.55; font-size: 14px; margin-bottom: 20px; color: var(--ink); }
+  .ex-instructions{ font-size: 16.5px; line-height: 1.65; color: var(--ink); }
+  .ex-nav{ display:flex; gap: 12px; margin-top: 28px; }
+  .ex-nav .btn{ font-size: 14.5px; padding: 13px 18px; }
+  .ex-nav .btn-ghost{ color: var(--cream); border-color: var(--line-on-ink); }
+
+  /* ---- Rhythm screen ---- */
+  .rhythm-card{ background: var(--cream); border: 1px solid var(--line-on-cream); border-radius: 18px; padding: 20px 22px; margin-bottom: 14px; }
+  .rhythm-card h3{ font-size: 16.5px; margin-bottom: 6px; color: var(--ink); }
+  .rhythm-card p{ opacity: 0.6; font-size: 14.5px; line-height:1.5; margin:0; color: var(--ink); }
+  .rhythm-note{ margin-top: 22px; font-size: 14.5px; opacity: 0.55; line-height: 1.6; font-style: italic; text-align:center; }
+
+  /* ---- Carnet: full-page photo background (source is high-res enough) ---- */
+  .full-bg{ position: relative; isolation: isolate; }
+  .full-bg::before{
+    content:'';
+    position: fixed; inset: 0;
+    background-size: cover; background-position: center; background-repeat: no-repeat;
+    z-index: -1;
+  }
+  .full-bg::after{
+    content:'';
+    position: fixed; inset: 0;
+    background: rgba(20,23,31,0.42);
+    z-index: -1;
+  }
+  #screen-carnet::before{ background-image: url('images/carnet-grid-bg.jpg'); }
+
+  /* ---- Projects: header photo band (low-res source, avoid over-zooming it) ---- */
+  .band-bg{ position: relative; isolation: isolate; }
+  .band-bg::before{
+    content:'';
+    position: fixed; top:0; left:0; right:0; height: min(58vh, 460px);
+    background-size: cover; background-position: center 25%; background-repeat: no-repeat;
+    filter: blur(2px) brightness(0.85);
+    z-index: -1;
+  }
+  .band-bg::after{
+    content:'';
+    position: fixed; top:0; left:0; right:0; height: min(58vh, 460px);
+    background: linear-gradient(180deg, rgba(20,23,31,0.05) 0%, var(--ink) 94%);
+    z-index: -1;
+  }
+  #screen-projects::before{ background-image: url('images/projects-bg.jpg'); }
+
+  .full-bg .menu-title, .full-bg .menu-sub, .full-bg .back,
+  .full-bg .carnet-prompt label, .band-bg .letter p{
+    text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+  }
+
+  /* ---- Carnet screen ---- */
+  .carnet-prompt{ margin-bottom: 22px; }
+  .carnet-prompt label{
+    display:block; font-family:'Bricolage Grotesque', sans-serif; font-weight: 600; font-size: 16px; margin-bottom: 8px; color: var(--cream);
+  }
+  .carnet-prompt textarea{
+    width: 100%; min-height: 90px; background: var(--cream); border: 1px solid var(--line-on-cream);
+    border-radius: 14px; padding: 14px; color: var(--ink); font-family:'Work Sans', sans-serif;
+    font-size: 14.5px; resize: vertical;
+  }
+  .carnet-prompt textarea:focus{ outline: none; border-color: var(--blue); }
+  .carnet-note{ text-align:center; opacity: 0.5; font-size: 13px; margin-top: 6px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- SCREEN 0 : TITLE -->
+  <section class="screen active" id="screen-title">
+    <div class="intro-body">
+      <div class="photo-scatter">
+        <div class="polaroid"><img src="images/page-1/p1-1.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-1/p1-2.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-1/p1-3.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-1/p1-4.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-1/p1-5.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-1/p1-6.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-1/p1-7.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-1/p1-8.jpg" alt="" loading="lazy"></div>
+      </div>
+      <div class="eyebrow-note">un petit quelque chose, rien que pour toi</div>
+      <h1 class="hero-title">MORAYO<br><span>TURNS 25!</span></h1>
+      <p class="hero-sub">La boss lady que tu penses être.<br>Prête pour cette année remplie de projets et de nouvelles aventures incroyables ?</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="showScreen('screen-promise')">Let's go !</button>
+    </div>
+    <div class="link-row">
+      <div class="rhythm-link" onclick="showScreen('screen-menu')" style="background:transparent; border:none; opacity:0.55; padding:10px; font-weight:400; font-size:14px; color:var(--cream);">Aller directement aux exercices →</div>
+    </div>
+  </section>
+
+  <!-- SCREEN 0.5 : PROMISE -->
+  <section class="screen" id="screen-promise">
+    <div class="intro-body">
+      <div class="photo-scatter">
+        <div class="polaroid"><img src="images/page-2/p2-1.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-2/p2-2.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-2/p2-3.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-2/p2-4.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-2/p2-5.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-2/p2-6.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-2/p2-7.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-2/p2-8.jpg" alt="" loading="lazy"></div>
+        <div class="polaroid"><img src="images/page-2/p2-9.jpg" alt="" loading="lazy"></div>
+      </div>
+      <div class="letter">
+        <p>Ma très chère Morayo, tu es en train de devenir la meilleure version de toi-même, celle que tu manifestes.</p>
+        <p>Et pour ça, je te présente ton outil, rien que pour toi, qui t'aidera à t'améliorer TOUS les jours.</p>
+        <p>T'es prête à le découvrir ?</p>
+      </div>
+      <img class="meme-sticker" src="images/meme-macron.jpg" alt="meme Macron 'forchure'" loading="lazy">
+    </div>
+    <div class="btn-row two">
+      <button class="btn" onclick="playGlitter(); showScreen('screen-projects')">Ouii, for sure</button>
+      <button class="btn btn-ghost" onclick="playWink(); showScreen('screen-reassure')">Oula j'ai peur</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 0.6 : REASSURE -->
+  <section class="screen" id="screen-reassure">
+    <div class="intro-body">
+      <div class="reassure-box">
+        <p>Mais non, t'inquiète, fais-moi confiance.</p>
+      </div>
+      <video class="reassure-video" src="images/reassure-calmdown.mp4" autoplay loop muted playsinline></video>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="playWink(); showScreen('screen-projects')">Let's go</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 0.7 : PROJECTS -->
+  <section class="screen band-bg" id="screen-projects">
+    <div class="intro-body">
+      <div class="letter">
+        <p>L'Appartement, MoRoundTheGlobe, et j'en passe... tu débordes de créativité et de talent.</p>
+        <p>Et parmi tout ce qui peut t'aider à vaincre ta timidité, il y a l'art oratoire…</p>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="showScreen('screen-photo')">Suivant</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 0.8 : PHOTO / BULB -->
+  <section class="screen" id="screen-photo">
+    <div class="intro-body">
+      <!-- [img: photo Morayo & Eole] -->
+      <div class="letter">
+        <p>Lors d'une discussion, tu m'as confié qu'il y a longtemps <!-- [img: photo Morayo petite] -->, tu étais timide — que tu avais du mal à prendre ta place et à t'exprimer.</p>
+        <p>Tu m'as dit que tu t'étais beaucoup améliorée, mais que cette petite boule au ventre est encore là aujourd'hui.</p>
+        <p>Cet échange m'a marquée et je me suis dit qu'il fallait que tu puisses ne plus jamais douter de toi et de tes compétences à l'oral.</p>
+        <p>Alors j'ai eu une idée.</p>
+      </div>
+      <div class="bulb-wrap">
+        <button class="bulb-btn" id="bulb" onclick="litBulb()" aria-label="Allumer l'ampoule">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle class="glow" cx="32" cy="26" r="22" fill="var(--gold)"/>
+            <path class="filament" d="M32 8a15 15 0 0 0-8 27.7c1.8 1.2 2.8 2.4 2.8 4.3v2h10.4v-2c0-1.9 1-3.1 2.8-4.3A15 15 0 0 0 32 8Z" fill="#F4EDE0" stroke="#F4EDE0" stroke-width="1.4"/>
+            <path d="M26.5 46h11M27.5 50h9" stroke="#F4EDE0" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="bulb-hint" id="bulb-hint">touche l'ampoule</div>
+      </div>
+      <div class="reveal-next" id="photo-next">
+        <div class="btn-row">
+          <button class="btn" onclick="showScreen('screen-reveal')">Découvrir</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 0.9 : NAME REVEAL -->
+  <section class="screen" id="screen-reveal">
+    <div class="intro-body">
+      <div class="eyebrow-note">je te présente...</div>
+      <div class="name-reveal">L'Orayo</div>
+      <div class="letter">
+        <p>L'oral, l'élément indispensable à tous tes projets — celui sur lequel tu vas t'exercer, progresser, et dépasser cette petite timidité que tu portes encore.</p>
+        <p>Et Morayo — ton prénom, aux sonorités bien AFRIIIKAINNNES, que je ne pouvais pas laisser de côté.</p>
+        <p>Les deux réunis, ça donne L'Orayo. Rien que pour toi.</p>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="playGlitter(); showScreen('screen-menu')">C'est parti !</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 1 : MENU -->
+  <section class="screen" id="screen-menu">
+    <h2 class="menu-title">Choisis ton terrain</h2>
+    <p class="menu-sub">30 minutes par jour, 2 fois par semaine — ou juste quand l'envie passe. Aucune obligation.</p>
+    <div class="cat-grid" id="cat-grid"></div>
+
+    <div class="random-block">
+      <p>Pas envie de choisir aujourd'hui ?</p>
+      <button class="btn btn-ghost" onclick="pickRandom()">Tire un exercice au hasard</button>
+    </div>
+
+    <div class="link-row">
+      <div class="rhythm-link" onclick="showScreen('screen-rhythm')">Un rythme qui te ressemble →</div>
+      <div class="rhythm-link" onclick="showScreen('screen-carnet')" style="display:flex; align-items:center; justify-content:center; gap:10px; background:var(--blue-light); color:var(--ink); border-color:var(--blue-light);">
+        <img src="images/logo-moroundtheglobe.png" alt="" width="26" height="26" style="flex-shrink:0; border-radius:50%;">
+        <span>Carnet MoRoundTheGlobe →</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 2 : CATEGORY (exercise list) -->
+  <section class="screen" id="screen-category">
+    <div class="top-row">
+      <button class="back" onclick="showScreen('screen-menu')">← Menu</button>
+    </div>
+    <h2 class="menu-title" id="cat-title"></h2>
+    <p class="menu-sub" id="cat-subdesc"></p>
+    <div class="ex-list" id="ex-list"></div>
+  </section>
+
+  <!-- SCREEN 3 : EXERCISE DETAIL -->
+  <section class="screen" id="screen-exercise">
+    <div class="top-row">
+      <button class="back" id="ex-back">← Retour</button>
+    </div>
+    <div class="ex-card">
+      <span class="ex-tag" id="ex-tag"></span>
+      <h2 class="ex-title" id="ex-title"></h2>
+      <div class="ex-time" id="ex-time"></div>
+      <div class="ex-instructions" id="ex-instructions"></div>
+    </div>
+    <div class="ex-nav">
+      <button class="btn btn-ghost" onclick="showScreen('screen-menu')">Menu</button>
+      <button class="btn" onclick="pickRandom()">Un autre au hasard</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 4 : RHYTHM -->
+  <section class="screen" id="screen-rhythm">
+    <div class="top-row">
+      <button class="back" onclick="showScreen('screen-menu')">← Menu</button>
+    </div>
+    <h2 class="menu-title">Un rythme qui te ressemble</h2>
+    <p class="menu-sub">Pas de règle. Juste des idées, à prendre ou à laisser.</p>
+
+    <div class="rhythm-card">
+      <h3>Le sprint — 2 fois par semaine, 15 min</h3>
+      <p>Un exercice court avant une journée chargée. Idéal pour ancrer une habitude sans y penser.</p>
+    </div>
+    <div class="rhythm-card">
+      <h3>Le rendez-vous — 1 fois par semaine, 30 min</h3>
+      <p>Un créneau fixe, par exemple le dimanche soir, pour deux ou trois exercices d'affilée.</p>
+    </div>
+    <div class="rhythm-card">
+      <h3>Au fil de l'envie — sans plan</h3>
+      <p>Tu ouvres la page quand tu y penses, avant un rendez-vous client ou juste avant d'animer un dîner.</p>
+    </div>
+
+    <p class="rhythm-note">La régularité compte plus que la durée. Trois minutes, souvent, valent mieux qu'une heure, rarement.</p>
+  </section>
+
+  <!-- SCREEN 5 : CARNET MOAROUNDTHEGLOBE -->
+  <section class="screen full-bg" id="screen-carnet">
+    <div class="top-row">
+      <button class="back" onclick="showScreen('screen-menu')">← Menu</button>
+    </div>
+    <h2 class="menu-title">Carnet MoRoundTheGlobe</h2>
+    <p class="menu-sub">Un espace pour remettre les idées à plat, sans pression de résultat.</p>
+
+    <div class="carnet-prompt">
+      <label for="carnet-1">Des idées pour élargir ton offre au-delà du voyage — qu'est-ce qui pourrait se vendre à tout le monde, pas seulement à ceux qui adorent voyager ? (passeport, accessoire, objet symbolique...)</label>
+      <textarea id="carnet-1" placeholder="..."></textarea>
+    </div>
+    <div class="carnet-prompt">
+      <label for="carnet-2">2 idées de contenus à réaliser cette semaine ou ce mois</label>
+      <textarea id="carnet-2" placeholder="..."></textarea>
+    </div>
+    <div class="carnet-prompt">
+      <label for="carnet-3">Où vois-tu ton projet dans 3 ans ?</label>
+      <textarea id="carnet-3" placeholder="..."></textarea>
+    </div>
+    <div class="carnet-prompt">
+      <label for="carnet-4">Ton brouillon</label>
+      <textarea id="carnet-4" placeholder="Note tout ce qui te passe par la tête..." style="min-height:140px;"></textarea>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  let audioCtx;
+  function getAudioCtx(){
+    if(!audioCtx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(AC) audioCtx = new AC();
+    }
+    return audioCtx;
+  }
+  function playTone(freq, duration, type, startGain){
+    try{
+      const ctx = getAudioCtx();
+      if(!ctx) return;
+      if(ctx.state === 'suspended') ctx.resume();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type || 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(startGain || 0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    }catch(e){}
+  }
+  function playClick(){ playTone(540, 0.09, 'sine', 0.1); }
+  function playChime(){
+    playTone(660, 0.35, 'sine', 0.13);
+    setTimeout(() => playTone(880, 0.45, 'sine', 0.11), 100);
+    setTimeout(() => playTone(1108, 0.5, 'sine', 0.08), 220);
+  }
+  function playReveal(){
+    // bright, happy little bounce
+    const notes = [523, 659, 784, 1047];
+    notes.forEach((f, i) => {
+      setTimeout(() => playTone(f, 0.2, 'triangle', 0.14), i * 70);
+    });
+    setTimeout(() => {
+      playTone(1047, 0.5, 'sine', 0.13);
+      playTone(1319, 0.5, 'sine', 0.1);
+    }, 280);
+  }
+  function playWink(){
+    playTone(880, 0.08, 'sine', 0.12);
+    setTimeout(() => playTone(660, 0.12, 'sine', 0.1), 90);
+  }
+  function playGlitter(){
+    const notes = [1568, 1760, 2093, 1976, 2349, 2637];
+    notes.forEach((f, i) => {
+      setTimeout(() => playTone(f, 0.18, 'sine', 0.06), i * 45);
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    if(e.target.closest && e.target.closest('.btn')){ playClick(); }
+  });
+
+  const categories = [
+    {
+      id: 'voix',
+      name: 'Voix & Souffle',
+      color: '#C9973F',
+      icon: 'V',
+      desc: "Pour t'échauffer avant de parler",
+      exercises: [
+        { title: "Respiration ancrée", time: "2 min", text: "Debout, pieds bien ancrés au sol, respire profondément par le ventre pendant 10 cycles. Sens l'air descendre jusqu'au bas-ventre avant de prononcer le premier mot." },
+        { title: "Les trois virelangues", time: "3 min", text: "Répète chaque phrase 3 fois, de plus en plus vite, sans perdre en clarté : « Un chasseur sachant chasser sait chasser sans son chien. » « Les chaussettes de l'archiduchesse sont-elles sèches, archi-sèches ? » « Si six scies scient six cyprès, six-cent-six scies scient six-cent-six cyprès. »" },
+        { title: "Le stylo en bouche", time: "2 min", text: "Tiens un stylo horizontalement entre les dents et lis un texte à voix haute pendant une minute. Retire le stylo et relis le même texte : ta diction paraîtra nettement plus claire." },
+        { title: "Voyelles projetées", time: "2 min", text: "Prononce lentement A - E - I - O - U en projetant ta voix comme si tu t'adressais à quelqu'un au fond d'une pièce, sans crier. Cherche la puissance dans le souffle, pas dans la gorge." }
+      ]
+    },
+    {
+      id: 'impro',
+      name: 'Improvisation',
+      color: '#B5657A',
+      icon: 'I',
+      desc: "Pour parler sans filet, sans préparation",
+      exercises: [
+        { title: "L'objet mystère", time: "1 min", text: "Prends un objet autour de toi — une tasse, un stylo, un coussin — et parle-en pendant 1 minute sans hésiter, comme si tu le présentais à un client curieux." },
+        { title: "Le mot imposé", time: "2 min", text: "Choisis un mot au hasard dans un livre ou sur ton téléphone. Improvise une petite histoire de 2 minutes qui l'intègre naturellement." },
+        { title: "Les deux camps", time: "3 min", text: "Prends un sujet léger — le café contre le thé, la ville contre la campagne — et défends les deux points de vue, une minute chacun, avec la même conviction." },
+        { title: "Le micro-trottoir imaginaire", time: "2 min", text: "Imagine qu'on te tend un micro dans la rue : « Comment ça va aujourd'hui ? » Réponds de façon vivante, avec une anecdote plutôt qu'une réponse toute faite." }
+      ]
+    },
+    {
+      id: 'story',
+      name: "Storytelling — L'Appartement",
+      color: '#7A2E3A',
+      icon: 'S',
+      desc: "Pour animer les échanges du dîner comme personne d'autre",
+      exercises: [
+        { title: "L'anecdote du jour", time: "2 min", text: "Raconte un moment de ta journée avec un début, un petit rebondissement, et une fin — comme tu le ferais pour lancer un échange à L'Appartement." },
+        { title: "Les questions qui accrochent", time: "5 min", text: "Écris 3 questions ouvertes que tu pourrais poser autour de la table pendant le dîner pour lancer une vraie conversation, pas un interrogatoire." },
+        { title: "Le souvenir en trois actes", time: "3 min", text: "Raconte un souvenir marquant en trois temps : la situation de départ, l'élément qui a tout changé, puis comment ça s'est résolu." },
+        { title: "Changer de rythme", time: "2 min", text: "Reprends une histoire que tu connais par cœur et raconte-la deux fois : une fois vite et enjouée, une fois lentement, avec du suspense — comme tu ajustes le ton pendant une soirée." }
+      ]
+    },
+    {
+      id: 'pitch',
+      name: 'Pitch & Vente — MoRoundTheGlobe',
+      color: '#2B4F7C',
+      icon: 'P',
+      desc: "Pour vendre tes voyages sur mesure et tous tes projets",
+      exercises: [
+        { title: "Le pitch 30 secondes", time: "1 min", text: "Présente MoRoundTheGlobe en 30 secondes à quelqu'un qui n'en a jamais entendu parler, comme si tu voulais lui donner envie de partir demain." },
+        { title: "Le pourquoi avant le quoi", time: "3 min", text: "Explique pourquoi tu as lancé ce projet avant d'expliquer ce que c'est. Commence chaque phrase par « Je fais ça parce que... »" },
+        { title: "Vendre sans vendre", time: "2 min", text: "Raconte un voyage que tu as organisé et dont le client est reparti ravi — comme une histoire qu'on partage entre amies, pas comme une publicité." },
+        { title: "La réponse à l'objection", time: "2 min", text: "Imagine qu'un client hésite : « c'est trop cher », « je préfère organiser moi-même ». Prépare à voix haute une réponse chaleureuse, curieuse, jamais défensive." }
+      ]
+    },
+    {
+      id: 'presence',
+      name: 'Présence & Regard — Médias & Presse',
+      color: '#4A7C94',
+      icon: 'R',
+      desc: "Pour assurer face à la caméra, aux journalistes, et au public",
+      exercises: [
+        { title: "Le face-caméra", time: "2 min", text: "Filme-toi une minute en te présentant comme consultante média, comme si c'était le début d'une interview. Regarde ensuite la vidéo sans te juger, et note une seule chose que tu as aimée." },
+        { title: "L'ancrage silencieux", time: "1 min", text: "Avant de parler, tiens-toi debout 10 secondes en silence, épaules relâchées, regard droit devant toi. Puis commence, sans te presser." },
+        { title: "Le sourire dans la voix", time: "2 min", text: "Lis un texte neutre — une actu, un communiqué — en souriant volontairement pendant la lecture. Écoute ce que ça change dans ta voix." },
+        { title: "La pause assumée", time: "2 min", text: "Raconte une idée en t'obligeant à faire une vraie pause silencieuse de 2 secondes après chaque phrase importante, comme devant un micro. Résiste à l'envie de la combler." }
+      ]
+    }
+  ];
+
+  let currentCategory = null;
+
+  function renderMenu(){
+    const grid = document.getElementById('cat-grid');
+    grid.innerHTML = '';
+    categories.forEach(cat => {
+      const card = document.createElement('button');
+      card.className = 'cat-card';
+      card.style.setProperty('--cat-color', cat.color);
+      card.onclick = () => openCategory(cat.id);
+      card.innerHTML = `
+        <div class="cat-dot">${cat.icon}</div>
+        <div>
+          <div class="cat-name">${cat.name}</div>
+          <div class="cat-desc">${cat.desc}</div>
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  function openCategory(catId){
+    const cat = categories.find(c => c.id === catId);
+    currentCategory = cat;
+    document.getElementById('cat-title').textContent = cat.name;
+    document.getElementById('cat-subdesc').textContent = cat.desc;
+    const list = document.getElementById('ex-list');
+    list.innerHTML = '';
+    cat.exercises.forEach((ex, i) => {
+      const row = document.createElement('button');
+      row.className = 'ex-row';
+      row.style.setProperty('--cat-color', cat.color);
+      row.onclick = () => openExercise(cat, i, 'screen-category');
+      row.innerHTML = `<span class="ex-row-title">${ex.title}</span><span class="ex-row-time">${ex.time}</span>`;
+      list.appendChild(row);
+    });
+    showScreen('screen-category');
+  }
+
+  function openExercise(cat, index, fromScreen){
+    const ex = cat.exercises[index];
+    document.getElementById('ex-tag').textContent = cat.name;
+    document.getElementById('ex-tag').style.color = cat.color;
+    document.getElementById('ex-tag').style.borderColor = cat.color;
+    document.getElementById('ex-title').textContent = ex.title;
+    document.getElementById('ex-time').textContent = ex.time;
+    document.getElementById('ex-instructions').textContent = ex.text;
+    const backBtn = document.getElementById('ex-back');
+    backBtn.onclick = () => {
+      if(fromScreen === 'screen-category' && currentCategory){
+        openCategory(currentCategory.id);
+      } else {
+        showScreen('screen-menu');
+      }
+    };
+    showScreen('screen-exercise');
+  }
+
+  function pickRandom(){
+    const cat = categories[Math.floor(Math.random() * categories.length)];
+    const index = Math.floor(Math.random() * cat.exercises.length);
+    currentCategory = cat;
+    openExercise(cat, index, 'screen-menu');
+  }
+
+  function litBulb(){
+    const bulb = document.getElementById('bulb');
+    bulb.classList.add('lit');
+    document.getElementById('bulb-hint').textContent = "l'idée est là";
+    document.getElementById('photo-next').classList.add('show');
+    playChime();
+  }
+
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+    if(id === 'screen-reveal'){
+      setTimeout(playReveal, 300);
+    }
+  }
+
+  const CARNET_KEY = 'orayo-carnet';
+  function setupCarnetPersistence(){
+    let saved = {};
+    try{ saved = JSON.parse(localStorage.getItem(CARNET_KEY)) || {}; }catch(e){}
+    document.querySelectorAll('.carnet-prompt textarea').forEach(ta => {
+      if(saved[ta.id]) ta.value = saved[ta.id];
+      ta.addEventListener('input', () => {
+        try{
+          const data = JSON.parse(localStorage.getItem(CARNET_KEY)) || {};
+          data[ta.id] = ta.value;
+          localStorage.setItem(CARNET_KEY, JSON.stringify(data));
+        }catch(e){}
+      });
+    });
+  }
+
+  renderMenu();
+  setupCarnetPersistence();
+</script>
+
+</body>
+</html>
