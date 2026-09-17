@@ -615,9 +615,17 @@
     });
   }
 
+  let audioStarted = false;
   document.addEventListener('click', (e) => {
     if(e.target.closest && e.target.closest('.btn')){ playClick(); }
-  });
+    if(!audioStarted){
+      audio.play().then(() => {
+        audioStarted = true;
+        btn.classList.add('playing');
+        icon.textContent = '♪';
+      }).catch(() => {});
+    }
+  }, { once: false });
 
   const categories = [
     {
@@ -786,6 +794,70 @@
 
   renderMenu();
   setupCarnetPersistence();
+</script>
+
+<!-- AUDIO PLAYER FLOTTANT -->
+<audio id="bg-audio" loop>
+  <source src="/audios/Asake - Gratitude (Official Video).mp3.mpeg" type="audio/mpeg">
+</audio>
+
+<button id="audio-btn" onclick="toggleAudio()" aria-label="Lecture / Pause musique" title="Musique">
+  <span id="audio-icon">▶</span>
+</button>
+
+<style>
+  #audio-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 22px;
+    z-index: 999;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: var(--gold);
+    color: var(--ink);
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #audio-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 10px 28px rgba(201,151,63,0.5);
+  }
+  #audio-btn.playing {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 6px 20px rgba(201,151,63,0.4); }
+    50%       { box-shadow: 0 6px 28px rgba(201,151,63,0.75); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #audio-btn.playing { animation: none; }
+  }
+</style>
+
+<script>
+  const audio = document.getElementById('bg-audio');
+  const btn   = document.getElementById('audio-btn');
+  const icon  = document.getElementById('audio-icon');
+  audio.volume = 0.35;
+
+  function toggleAudio() {
+    if (audio.paused) {
+      audio.play();
+      btn.classList.add('playing');
+      icon.textContent = '♪';
+    } else {
+      audio.pause();
+      btn.classList.remove('playing');
+      icon.textContent = '▶';
+    }
+  }
 </script>
 
 </body>
