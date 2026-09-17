@@ -384,11 +384,14 @@
         <p>Et pour ça, je te présente ton outil, rien que pour toi, qui t'aidera à t'améliorer TOUS les jours.</p>
         <p>T'es prête à le découvrir ?</p>
       </div>
-      <img class="meme-sticker" src="images/meme-macron.jpg" alt="meme Macron 'forchure'" loading="lazy">
     </div>
-    <div class="btn-row two">
-      <button class="btn" onclick="playGlitter(); showScreen('screen-projects')">Ouii, for sure</button>
-      <button class="btn btn-ghost" onclick="playWink(); showScreen('screen-reassure')">Oula j'ai peur</button>
+    <div class="btn-row two" style="align-items: center;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px; flex:1;">
+        <img src="images/meme-macron.jpg" alt="meme Macron 'forchure'" loading="lazy"
+             style="width:64px; height:64px; object-fit:cover; border-radius:50%; border:3px solid #fff; box-shadow:0 4px 12px rgba(0,0,0,0.4); transform:rotate(-3deg);">
+        <button class="btn" onclick="playGlitter(); showScreen('screen-projects')">Ouii, for sure</button>
+      </div>
+      <button class="btn btn-ghost" onclick="playWink(); showScreen('screen-reassure')" style="flex:1;">Oula j'ai peur</button>
     </div>
   </section>
 
@@ -412,6 +415,53 @@
         <p>L'Appartement, MoRoundTheGlobe, et j'en passe... tu débordes de créativité et de talent.</p>
         <p>Et parmi tout ce qui peut t'aider à vaincre ta timidité, il y a l'art oratoire…</p>
       </div>
+  
+      <!-- TÉLÉPHONES INSTAGRAM -->
+      <div style="display:flex; justify-content:center; gap:20px; margin-top:28px; padding-bottom:8px;">
+  
+        <!-- Téléphone 1 -->
+        <div style="position:relative; width:140px; flex-shrink:0; transform:rotate(-4deg);">
+          <div style="
+            background:#1a1a2e;
+            border-radius:28px;
+            padding:10px 8px;
+            box-shadow:0 16px 40px rgba(0,0,0,0.6), inset 0 0 0 1.5px rgba(255,255,255,0.1);
+          ">
+            <!-- Encoche -->
+            <div style="width:40px;height:8px;background:#111;border-radius:99px;margin:0 auto 6px;"></div>
+            <!-- Écran -->
+            <div style="border-radius:16px;overflow:hidden;height:220px;background:#000;">
+              <img src="images/screen-moroundtheglobe.jpg" alt="Instagram screen 1"
+                   style="width:100%;height:100%;object-fit:cover;display:block;">
+            </div>
+            <!-- Bouton home -->
+            <div style="width:28px;height:4px;background:rgba(255,255,255,0.15);border-radius:99px;margin:8px auto 2px;"></div>
+          </div>
+        </div>
+  
+        <!-- Téléphone 2 -->
+        <div style="position:relative; width:140px; flex-shrink:0; transform:rotate(3deg) translateY(10px);">
+          <div style="
+            background:#1a1a2e;
+            border-radius:28px;
+            padding:10px 8px;
+            box-shadow:0 16px 40px rgba(0,0,0,0.6), inset 0 0 0 1.5px rgba(255,255,255,0.1);
+          ">
+            <!-- Encoche -->
+            <div style="width:40px;height:8px;background:#111;border-radius:99px;margin:0 auto 6px;"></div>
+            <!-- Écran -->
+            <div style="border-radius:16px;overflow:hidden;height:220px;background:#000;">
+              <img src="images/screen-apartment.jpg" alt="Instagram screen 2"
+                   style="width:100%;height:100%;object-fit:cover;display:block;">
+            </div>
+            <!-- Bouton home -->
+            <div style="width:28px;height:4px;background:rgba(255,255,255,0.15);border-radius:99px;margin:8px auto 2px;"></div>
+          </div>
+        </div>
+  
+      </div>
+      <!-- FIN TÉLÉPHONES -->
+  
     </div>
     <div class="btn-row">
       <button class="btn" onclick="showScreen('screen-photo')">Suivant</button>
