@@ -385,13 +385,14 @@
         <p>T'es prête à le découvrir ?</p>
       </div>
     </div>
-    <div class="btn-row two" style="align-items: center;">
-      <div style="display:flex; flex-direction:column; align-items:center; gap:8px; flex:1;">
-        <img src="images/meme-macron.jpg" alt="meme Macron 'forchure'" loading="lazy"
-             style="width:64px; height:64px; object-fit:cover; border-radius:50%; border:3px solid #fff; box-shadow:0 4px 12px rgba(0,0,0,0.4); transform:rotate(-3deg);">
+  
+    <div style="position:relative;">
+      <div class="btn-row two">
         <button class="btn" onclick="playGlitter(); showScreen('screen-projects')">Ouii, for sure</button>
+        <button class="btn btn-ghost" onclick="playWink(); showScreen('screen-reassure')">Oula j'ai peur</button>
       </div>
-      <button class="btn btn-ghost" onclick="playWink(); showScreen('screen-reassure')" style="flex:1;">Oula j'ai peur</button>
+      <img src="images/meme-macron.jpg" alt="meme Macron" loading="lazy"
+           style="position:absolute; top:50%; left:-70px; transform:translateY(-50%) rotate(-4deg); width:80px; box-shadow:0 6px 16px rgba(0,0,0,0.45); z-index:2;">
     </div>
   </section>
 
@@ -859,7 +860,7 @@
   #audio-btn {
     position: fixed;
     bottom: 28px;
-    right: 22px;
+    left: 22px;
     z-index: 999;
     width: 52px;
     height: 52px;
