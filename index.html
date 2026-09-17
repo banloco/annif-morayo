@@ -35,7 +35,7 @@
     max-width: 560px;
     margin: 0 auto;
     min-height: 100vh;
-    padding: 32px 22px 60px;
+    padding: 32px 22px 120px;
     position: relative;
   }
 
@@ -298,16 +298,28 @@
     background: rgba(20,23,31,0.42);
     z-index: -1;
   }
-  #screen-carnet::before{ background-image: url('images/carnet-grid-bg.jpg'); }
-
-  /* ---- Projects: header photo band (low-res source, avoid over-zooming it) ---- */
-  .band-bg{ position: relative; isolation: isolate; }
-  .band-bg::before{
-    content:'';
-    position: fixed; top:0; left:0; right:0; height: min(58vh, 460px);
-    background-size: cover; background-position: center 25%; background-repeat: no-repeat;
-    filter: blur(2px) brightness(0.85);
-    z-index: -1;
+  #screen-carnet {
+    margin: -32px -22px;
+    padding: 32px 22px 120px;
+    min-height: 100vh;
+    background-image: url('images/carnet-grid-bg.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+  
+  #screen-carnet::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 23, 31, 0.55);
+    z-index: 0;
+  }
+  
+  #screen-carnet > * {
+    position: relative;
+    z-index: 1;
   }
   .band-bg::after{
     content:'';
@@ -859,7 +871,7 @@
 <style>
   #audio-btn {
     position: fixed;
-    bottom: 28px;
+    bottom: 90px;
     left: 22px;
     z-index: 999;
     width: 52px;
